@@ -1,11 +1,6 @@
 import React, {useState, useRef} from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { PlayIcon } from "@/components/icons/play";
-import { PauseIcon } from "@/components/icons/pause";
-import { SkipNextIcon } from "@/components/icons/skip-next";
-import { SkipPreviousIcon } from "@/components/icons/skip-previous";
-import { Slider } from "@/components/ui/slider";
+import { PlayIcon, PauseIcon, ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import * as Slider from '@radix-ui/react-slider';
 
 
 function PodcastPlayer() {
@@ -60,7 +55,7 @@ function PodcastPlayer() {
                 onLoadedData={handleLoadedData}
             />
             <div className="flex items-center justify-center">
-                <Button onClick={handleSkipBackward}>
+                <Button className = "p-2 rounded-lg hover:bg-gray-200" onClick={handleSkipBackward}>
                     <SkipPreviousIcon />
                 </Button>
                 <Button onClick={handlePlayPause}>
