@@ -24,12 +24,12 @@ public class YoutubeController
     }
 
     @PostMapping("/audio")
-    public ResponseEntity<Audio> postAudio(@RequestBody Audio audio)
+    public ResponseEntity<String> postAudio(@RequestBody YoutubeService request)
     {
         try
         {
-            youtubeService.extractAudio(audio.getAudio());
-            return ResponseEntity.ok(audio);
+            youtubeService.extractAudio(request.getUrl());
+            return ResponseEntity.ok("Audio extracted");
         }
         catch (Exception e)
         {
