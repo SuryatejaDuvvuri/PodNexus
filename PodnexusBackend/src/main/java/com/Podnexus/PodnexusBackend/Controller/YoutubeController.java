@@ -11,19 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.Podnexus.PodnexusBackend.Service.YoutubeService;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
 public class YoutubeController 
 {
     @Autowired
-    private final YoutubeService youtubeService;
-
-    public YoutubeController(YoutubeService youtubeService)
-    {
-        this.youtubeService = youtubeService;
-    }
+    private YoutubeService youtubeService;
 
     @PostMapping("/processAudio")
     public ResponseEntity<String> processLink(@RequestBody Map<String, String> request)
