@@ -23,8 +23,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())     
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll() 
+                .requestMatchers("/api/audio/**").permitAll()
                 .anyRequest().authenticated()
-            );
+            )
+            .csrf(csrf -> csrf.disable());
+            
+        
         
         return http.build();
     }
@@ -41,4 +45,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }

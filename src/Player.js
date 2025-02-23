@@ -20,29 +20,33 @@ function PodcastPlayer() {
             setLoading(false);
             setError('');
 
-            const response = await fetch ('/api/processAudio', {
+            const response = await fetch ('http://localhost:8080/api/processAudio', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
-                body: JSON.stringify({url: youtubeLink})
+                credentials: 'include',
+                body: JSON.stringify({ youtubeUrl: youtubeLink })
             });
 
             if(response.ok)
             {
                 const data = await response.text();
-                setAudio(data);
-
-                if(audioRef.current)
-                {
-                    audioRef.current.src = data;
-                    audioRef.current.play();
-                    setIsPlaying(true);
-                }
+                const audioUrl =`http://localhost:8080${data.trim()}`;
+                setAudio(audioUrl);
+                // if(audioRef.current)
+                // {
+                //     audioRef.current.src = data;
+                //     audioRef.current.load();
+                //     audioRef.current.play();
+                //     setIsPlaying(true);
+                // }
             }
             else
             {
-                throw new Error('Failed to process the audio.');
+                const errorData = await response.text();
+                throw new Error(errorData);
             }
 
         }
@@ -138,9 +142,11 @@ function PodcastPlayer() {
             <button disabled = {loading || !youtubeLink} onClick = {processAudio} className="w-full bg-blue-500 text-white py-2 rounded-lg">
                 {loading ? 'Processing...' : 'Play'}
             </button>
-            {/* <p className = 'text-red-500 mt-2 text-sm'>
-                {error}
-            </p> */}
+            {error &&
+                <p className = 'text-red-500 mt-2 text-sm'>
+                    {error}
+                </p>
+            }
             {audio && (
         <div className="flex flex-col items-center justify-center space-y-4">
             <audio
@@ -208,6 +214,9 @@ function PodcastPlayer() {
         </div>
         
         )}
+         <audio controls>
+             <source src="http://localhost:8080/api/audio/One.mp3" type="audio/mpeg" />
+          </audio>
         </div>
     );
 }
