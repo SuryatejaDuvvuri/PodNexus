@@ -35,13 +35,13 @@ function PodcastPlayer() {
                 const data = await response.text();
                 const audioUrl =`http://localhost:8080${data.trim()}`;
                 setAudio(audioUrl);
-                // if(audioRef.current)
-                // {
-                //     audioRef.current.src = data;
-                //     audioRef.current.load();
-                //     audioRef.current.play();
-                //     setIsPlaying(true);
-                // }
+                if(audioRef.current)
+                {
+                    audioRef.current.src = audioUrl;
+                    audioRef.current.load();
+                    // audioRef.current.play();
+                    // setIsPlaying(true);
+                }
             }
             else
             {
@@ -81,6 +81,15 @@ function PodcastPlayer() {
     const handleLoadedData = (e) => 
     {
         setDuration(e.target.duration);
+
+        if(audioRef.current && !isPlaying)
+        {
+            audioRef.current.play()
+            .then(() => setIsPlaying(true))
+            .catch(err => {
+                console.error("Could not be played.");
+            });
+        }
     }
 
     const handleSkipForward = () => 
@@ -130,7 +139,7 @@ function PodcastPlayer() {
         //         onChange={handleSeek}
         //     />
         // </div>
-        <div className = "w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <div className = "w-screen max-w-md p-6 bg-white rounded-lg shadow-lg">
             <div className = "mb-4">
                 <input
                 className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -155,7 +164,7 @@ function PodcastPlayer() {
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedData={handleLoadedData}
             />
-            <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center justify-center text-sm text-gray-500">
                 {/* <button className = "p-2 rounded-lg hover:bg-gray-200" onClick={handleSkipBackward}>
                     <ChevronLeftIcon />
                 </button>
@@ -214,9 +223,9 @@ function PodcastPlayer() {
         </div>
         
         )}
-         <audio controls>
-             <source src="http://localhost:8080/api/audio/One.mp3" type="audio/mpeg" />
-          </audio>
+    
+        <source src="http://localhost:8080/api/audio/One.mp3" type="audio/mpeg" />
+
         </div>
     );
 }
