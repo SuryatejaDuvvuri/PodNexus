@@ -2,7 +2,7 @@ package com.Podnexus.PodnexusBackend.Controller;
 
 import java.util.Map;
 
-import org.apache.catalina.connector.Response;
+// import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpHeaders;
@@ -47,12 +47,12 @@ public class YoutubeController
         }
     }
 
-    @GetMapping("/api/audio/{fileName:.+}")
-    public ResponseEntity<Resource> getAudio(@PathVariable String file) {
+    @GetMapping("/audio/{fileName:.+}")
+    public ResponseEntity<Resource> getAudio(@PathVariable String fileName) {
         
         try
         {
-            Resource res =youtubeService.getFile(file);
+            Resource res =youtubeService.getFile(fileName);
             return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + res.getFilename() + "\"")
             .contentType(MediaType.parseMediaType("audio/mpeg")).body(res);

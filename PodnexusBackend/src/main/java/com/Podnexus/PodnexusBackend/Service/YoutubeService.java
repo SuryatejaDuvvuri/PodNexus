@@ -42,9 +42,9 @@ public class YoutubeService {
             Path out = audioLocation.resolve(fileName);
             YoutubeDLRequest request = new YoutubeDLRequest(url);
             request.setOption("extract-audio");
+            request.setOption("output", out.toString());
             request.setOption("audio-format", "mp3");
             // request.setOption("output", "%(title)s.%(ext)s");
-            request.setOption("output", out.toString());
             YoutubeDLResponse response = YoutubeDL.execute(request);
             // return response.getOut();
             return "/api/audio/" + fileName;
