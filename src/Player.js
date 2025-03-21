@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { PlayIcon, PauseIcon, ChevronLeftIcon, ChevronRightIcon} from '@radix-ui/react-icons';
 import * as Slider from '@radix-ui/react-slider';
 
@@ -10,9 +10,49 @@ function PodcastPlayer() {
     const [duration, setDuration] = useState(0);
     const [youtubeLink, setYoutubeLink] = useState('');
     const [audio, setAudio] = useState('');
+    const [audioRecorder, setAudioRecorder] = useState(null);
+    const [recording, setRecording] = useState(false);
+    const [isRecorded, setIsRecorded] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('')
     const audioRef = useRef(null);
+
+    const toggleRecording = async () => {
+        if(recording)
+        {
+            audioRecorder.stop();
+            setRecording(false);
+        }
+        else
+        {
+            try
+            {
+                const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                const recorder = new MediaRecorder(stream);
+                const parts = [];
+
+
+                recorder.ondataavailable = (e) => {
+                    parts.push(e.data);
+                };
+
+                recorder.onstop = () => {
+                    const blob = new Blob(parts,{type: 'audio/webm'})
+                    const link = URL.createObjectURL(blob);
+                    setIsRecorded(link);
+                }
+
+                recorder.start();
+                setAudioRecorder(recorder);
+                setRecording(true);
+                
+            }
+            catch(err)
+            {
+                console.err("Microphone cannot be accessed",err);
+            }
+        }
+    }
     
     const processAudio = async () => {
         try
@@ -225,6 +265,18 @@ function PodcastPlayer() {
         )}
     
         <source src="http://localhost:8080/api/audio/One.mp3" type="audio/mpeg" />
+
+        <div className="mt-6 space-y-2">
+            <button
+                onClick={toggleRecording}
+                className={`w-full py-2 rounded-lg ${recording ? 'bg-red-500' : 'bg-green-500'} text-white`}
+            >
+                {recording ? 'Stop Recording' : 'Start Recording'}
+            </button>
+            {isRecorded && (
+                <audio controls src={isRecorded} className="w-full mt-2" />
+            )}
+        </div>
 
         </div>
     );
