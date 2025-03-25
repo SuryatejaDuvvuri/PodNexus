@@ -35,6 +35,7 @@
 	</scm>
 	<properties>
 		<java.version>23</java.version>
+		<spring-ai.version>1.0.0-M6</spring-ai.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -49,6 +50,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
     	</dependency>
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -83,6 +88,18 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-bom</artifactId>
+			<version>${spring-ai.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		</dependencies>
+  	</dependencyManagement>
 
 	<build>
 		<plugins>
