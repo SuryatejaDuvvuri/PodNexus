@@ -9,6 +9,8 @@ function PodcastPlayer() {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [youtubeLink, setYoutubeLink] = useState('');
+    const [transcript, setTranscript] = useState('');
+    const [speakers, setSpeakers] = useState([]);
     const [audio, setAudio] = useState('');
     const [audioRecorder, setAudioRecorder] = useState(null);
     const [recording, setRecording] = useState(false);
@@ -53,6 +55,42 @@ function PodcastPlayer() {
             }
         }
     }
+
+    const sendAudio = async () => {
+        try
+        {
+            const answer = await fetch(isRecorded);
+            const audioBlob = await answer.blob();
+            const formData = new FormData();
+            formData.append('file', audioBlob, 'audio.webm');
+            if (audioRef.current) 
+            {
+                formData.append('timestamp', format(audioRef.current.currentTime));
+            }
+            const response =await fetch('http://localhost:8080/api/analyzeAudio', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if(response.ok)
+            {
+                const data = await response.json();
+                console.log("Transcript:", data.script);
+                console.log("AI Response:", data.response);
+                // aiResponse.play();
+            }
+            else
+            {
+                console.error('Audio could not be played');
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
+
+    }
+
     
     const processAudio = async () => {
         try
@@ -73,14 +111,15 @@ function PodcastPlayer() {
             if(response.ok)
             {
                 const data = await response.text();
+                setTranscript(data.transcript);
+                setSpeakers(data.speakers);
+
                 const audioUrl =`http://localhost:8080${data.trim()}`;
                 setAudio(audioUrl);
                 if(audioRef.current)
                 {
                     audioRef.current.src = audioUrl;
                     audioRef.current.load();
-                    // audioRef.current.play();
-                    // setIsPlaying(true);
                 }
             }
             else
@@ -103,13 +142,33 @@ function PodcastPlayer() {
 
     const handlePlayPause = () => 
     {
+
+        // if (audioRef.current)
+        // {
+        //     audioRef.current.pause();
+        //     setIsPlaying(false);
+            
+        //     const time  = audioRef.current.currentTime;
+        //     console.log("User asks a question at " + format(time));
+        // }
+
+       
         if (isPlaying) 
         {
             audioRef.current.pause();
-        } else 
+            const time  = audioRef.current.currentTime;
+            console.log("User asks a question at " + format(time));
+            if(recording === false)
+            {
+                sendAudio();
+            }
+        } 
+        else 
         {
             audioRef.current.play();
         }
+
+
         setIsPlaying(!isPlaying);
     };
 
@@ -277,6 +336,12 @@ function PodcastPlayer() {
                 <audio controls src={isRecorded} className="w-full mt-2" />
             )}
         </div>
+
+
+
+        
+
+           
 
         </div>
     );

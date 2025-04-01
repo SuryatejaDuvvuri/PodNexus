@@ -39,14 +39,29 @@ public class PodcastController
     // }
 
     @PostMapping("/analyzeAudio")
-    public ResponseEntity<Map<String, String>> analyzeAudio(@RequestParam("file") MultipartFile audio)
+    public ResponseEntity<Map<String, String>> analyzeAudio(@RequestParam("file") MultipartFile audio, @RequestParam(value = "timestamp", required = false) String timestamp)
     {
         try
         {
+            System.out.println("Received audio file: " + audio.getOriginalFilename());
             // String script = stt.convertTranscript(audio);
-            String script =  stt.processDiarization(audio);
+            File inFile = File.createTempFile("User", ".webm");
+            audio.transferTo(inFile);
+            String script =  stt.convertTranscript(inFile);
+            String response = "";
+            inFile.delete();
 
-            String aiResponse = ai.processTranscript(script);
+            if (timestamp != null && !timestamp.isEmpty())
+            {
+               response = "User has asked a question at " + timestamp + ": \n" + script;
+            }
+            else
+            {
+                response = script;
+            }
+
+            String aiResponse = ai.respondToUser(response);
+            System.out.println("AI Response: " + aiResponse);
             
 
             return ResponseEntity.ok(Map.of(

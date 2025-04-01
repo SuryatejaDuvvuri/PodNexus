@@ -1,5 +1,6 @@
 package com.Podnexus.PodnexusBackend.Controller;
 
+import java.io.File;
 import java.util.Map;
 
 // import org.apache.catalina.connector.Response;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
+
+import com.Podnexus.PodnexusBackend.Service.AIService;
+import com.Podnexus.PodnexusBackend.Service.SpeechToText;
 import com.Podnexus.PodnexusBackend.Service.YoutubeService;
 
 @RestController
@@ -23,6 +27,13 @@ public class YoutubeController
 {
     @Autowired
     private YoutubeService youtubeService;
+
+    @Autowired
+    private SpeechToText stt;
+
+    @Autowired
+    private AIService aiService;
+
     
     
 
@@ -39,6 +50,12 @@ public class YoutubeController
             try
             {
                 String output = youtubeService.extractAudio(link);
+                File inFile = new File(output);
+                String transcript = stt.convertTranscript(inFile);
+                // String transcript = stt.processDiarization(inFile);
+                System.out.println("AI Response: " + aiService.processTranscript(transcript));
+                System.out.println(transcript);
+               
                 return ResponseEntity.ok().body(output);
             }
             catch(Exception e)

@@ -14,14 +14,13 @@ public class SpeechToText
 {
 
     
-    public String convertTranscript(MultipartFile audio)
+    public String convertTranscript(File audio)
     {
         try
         {
-            File inFile = File.createTempFile("One", ".mp3");
-            audio.transferTo(inFile);
+            
 
-            ProcessBuilder pb = new ProcessBuilder("whisper", inFile.getAbsolutePath(), "--model", "base", "--output_format", "txt");
+            ProcessBuilder pb = new ProcessBuilder("whisper", "/Users/SuryatejaD/Developer/Projects/Spring/podnexus/PodnexusBackend/audio-files/One.mp3", "--model", "base", "--output_format", "txt");
             Process p = pb.start();
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             StringBuilder sb = new StringBuilder();
@@ -31,7 +30,7 @@ public class SpeechToText
                 sb.append(line).append("\n");
             }
 
-            inFile.delete();
+
             return sb.toString().trim();
         }
         catch(IOException e)
@@ -41,13 +40,12 @@ public class SpeechToText
         }
     }
 
-    public String processDiarization(MultipartFile audio)
+    public String processDiarization(File inFile)
     {
        try
        {
-            File audioFile = File.createTempFile("audio", ".mp3");
-            audio.transferTo(audioFile);
-            ProcessBuilder pb = new ProcessBuilder("python3", "diarize.py", audioFile.getAbsolutePath());
+
+            ProcessBuilder pb = new ProcessBuilder("python3", "src/main/java/com/Podnexus/PodnexusBackend/Service/diarize.py", "/Users/SuryatejaD/Developer/Projects/Spring/podnexus/PodnexusBackend/audio-files/One.mp3");
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
