@@ -61,7 +61,7 @@ public class AIService
             return "No transcript available. Provide the youtube link first.";
         }
         String prompt = """
-            You are the host of the following podcast. Based on the transcript below, respond naturally to the listener's comment as if you were continuing the podcast. Be informal, natural, and conversational. You are not summarizing. You're reacting like you're in the moment.
+            You are the host of the following podcast. Based on the transcript below, respond naturally to the listener's comment as if you were continuing the podcast. Be informal, natural, and conversational. You are not summarizing. You're reacting like you're in the moment. Don't beat around the bush. Just answer the question directly.
 
             Transcript:
             """ + storedTranscript + "\n\nListener says: \"" + userResponse + "\"\n\nRespond as if you're continuing the episode:";

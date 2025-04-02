@@ -2,6 +2,8 @@ package com.Podnexus.PodnexusBackend.Controller;
 
 import java.io.File;
 import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 // import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
+
 
 import com.Podnexus.PodnexusBackend.Service.AIService;
 import com.Podnexus.PodnexusBackend.Service.SpeechToText;
@@ -50,7 +53,10 @@ public class YoutubeController
             try
             {
                 String output = youtubeService.extractAudio(link);
-                File inFile = new File(output);
+                Path audioPath = Paths.get("audio-files", "One.mp3");
+
+                File inFile = audioPath.toFile();
+                System.out.println(inFile.getAbsolutePath());
                 String transcript = stt.convertTranscript(inFile);
                 // String transcript = stt.processDiarization(inFile);
                 System.out.println("AI Response: " + aiService.processTranscript(transcript));

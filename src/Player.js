@@ -23,6 +23,7 @@ function PodcastPlayer() {
         if(recording)
         {
             audioRecorder.stop();
+           
             setRecording(false);
         }
         else
@@ -38,15 +39,54 @@ function PodcastPlayer() {
                     parts.push(e.data);
                 };
 
-                recorder.onstop = () => {
-                    const blob = new Blob(parts,{type: 'audio/webm'})
-                    const link = URL.createObjectURL(blob);
-                    setIsRecorded(link);
+                recorder.onstop = async () => {
+                    
+                    try
+                    {
+                        const blob = new Blob(parts,{type: 'audio/webm;codecs=opus'});
+                        console.log(blob);
+                        const link = URL.createObjectURL(blob);
+                        setIsRecorded(link);
+                        
+                        const formData = new FormData();
+                        formData.append('file', blob, 'recording.webm');
+                        // formData.append('timestamp', format(audioRef.current.currentTime));
+
+                       
+                        const response = await fetch('http://localhost:8080/api/analyzeAudio', {
+                            method: 'POST',
+                          
+                            headers: {
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: formData
+                        });
+            
+                        if(response.ok)
+                        {
+                            const data = await response.json();
+                            console.log("Transcript:", data.script);
+                            console.log("AI Response:", data.response);
+
+                        }
+                        else
+                        {
+                            console.error('Audio could not be played');
+                        }
+                    }
+                    catch(err)
+                    {
+                        console.error("Error sending audio", err);
+                        setError('Audio could not be sent. Please try again.');
+                    }
                 }
 
                 recorder.start();
                 setAudioRecorder(recorder);
                 setRecording(true);
+
+               
                 
             }
             catch(err)
@@ -56,40 +96,51 @@ function PodcastPlayer() {
         }
     }
 
-    const sendAudio = async () => {
-        try
-        {
-            const answer = await fetch(isRecorded);
-            const audioBlob = await answer.blob();
-            const formData = new FormData();
-            formData.append('file', audioBlob, 'audio.webm');
-            if (audioRef.current) 
-            {
-                formData.append('timestamp', format(audioRef.current.currentTime));
-            }
-            const response =await fetch('http://localhost:8080/api/analyzeAudio', {
-                method: 'POST',
-                body: formData,
-            });
+    // const sendAudio = async () => {
+    //     setLoading(true);
+    //     try
+    //     {
+    //         if(!isRecorded)
+    //         {
+    //             console.error("No audio recorded");
+    //             return;
+    //         }
+    //         const answer = await fetch(isRecorded);
+    //         const audioBlob = await answer.blob();
+    //         const formData = new FormData();
+    //         formData.append('file', audioBlob, 'audio.webm');
+    //         if (audioRef.current) 
+    //         {
+    //             formData.append('timestamp', format(audioRef.current.currentTime));
+    //         }
+    //         const response =await fetch('http://localhost:8080/api/analyzeAudio', {
+    //             method: 'POST',
+    //             body: formData,
+    //         });
 
-            if(response.ok)
-            {
-                const data = await response.json();
-                console.log("Transcript:", data.script);
-                console.log("AI Response:", data.response);
-                // aiResponse.play();
-            }
-            else
-            {
-                console.error('Audio could not be played');
-            }
-        }
-        catch(err)
-        {
-            console.error(err);
-        }
+    //         if(response.ok)
+    //         {
+    //             const data = await response.json();
+    //             console.log("Transcript:", data.script);
+    //             console.log("AI Response:", data.response);
+    //             // aiResponse.play();
+    //         }
+    //         else
+    //         {
+    //             console.error('Audio could not be played');
+    //         }
+    //     }
+    //     catch(err)
+    //     {
+    //         console.error(err);
+    //     }
+    //     finally
+    //     {
+    //         setLoading(false);
+    //         setIsRecorded(null);
+    //     }
 
-    }
+    // }
 
     
     const processAudio = async () => {
@@ -143,33 +194,23 @@ function PodcastPlayer() {
     const handlePlayPause = () => 
     {
 
-        // if (audioRef.current)
-        // {
-        //     audioRef.current.pause();
-        //     setIsPlaying(false);
-            
-        //     const time  = audioRef.current.currentTime;
-        //     console.log("User asks a question at " + format(time));
-        // }
-
+       if(!audioRef.current)
+         {
+            console.error("Audio element is not available.");
+            return;
+        }
        
         if (isPlaying) 
         {
             audioRef.current.pause();
-            const time  = audioRef.current.currentTime;
-            console.log("User asks a question at " + format(time));
-            if(recording === false)
-            {
-                sendAudio();
-            }
+            setIsPlaying(false);
+
         } 
         else 
         {
             audioRef.current.play();
+            setIsPlaying(true);
         }
-
-
-        setIsPlaying(!isPlaying);
     };
 
     const handleTimeUpdate = (e) => 
@@ -212,6 +253,8 @@ function PodcastPlayer() {
         const secs = Math.floor(time % 60);
         return `${mins}:${secs.toString().padStart(2,'0')}`;    
     };
+
+    
 
     return (
         // <div className="flex flex-col items-center justify-center">
