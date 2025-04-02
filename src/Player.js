@@ -9,8 +9,7 @@ function PodcastPlayer() {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [youtubeLink, setYoutubeLink] = useState('');
-    const [transcript, setTranscript] = useState('');
-    const [speakers, setSpeakers] = useState([]);
+    const [aiResponse, setAiResponse] = useState(null);
     const [audio, setAudio] = useState('');
     const [audioRecorder, setAudioRecorder] = useState(null);
     const [recording, setRecording] = useState(false);
@@ -50,7 +49,10 @@ function PodcastPlayer() {
                         
                         const formData = new FormData();
                         formData.append('file', blob, 'recording.webm');
-                        // formData.append('timestamp', format(audioRef.current.currentTime));
+                        if (audioRef.current) 
+                        {
+                            formData.append('timestamp', format(audioRef.current.currentTime));
+                        }
 
                        
                         const response = await fetch('http://localhost:8080/api/analyzeAudio', {
@@ -66,8 +68,27 @@ function PodcastPlayer() {
                         if(response.ok)
                         {
                             const data = await response.json();
-                            console.log("Transcript:", data.script);
-                            console.log("AI Response:", data.response);
+                            
+                            if(data.response)
+                            {
+                                const audioUrl = `http://localhost:8080${data.response.trim()}`;
+                                setAiResponse(audioUrl);
+
+                                const audio = new Audio();
+                                audio.oncanplaythrough = async () => {
+                                    try
+                                    {
+                                        await audio.play();
+                                    }
+                                    catch(err)
+                                    {
+                                        console.error("Error playing audio", err);
+                                        setError('Audio could not be played. Please try again.');
+                                    }
+                                }
+                                audio.src = audioUrl;
+                                await audio.play();
+                            }
 
                         }
                         else
@@ -162,8 +183,6 @@ function PodcastPlayer() {
             if(response.ok)
             {
                 const data = await response.text();
-                setTranscript(data.transcript);
-                setSpeakers(data.speakers);
 
                 const audioUrl =`http://localhost:8080${data.trim()}`;
                 setAudio(audioUrl);
@@ -378,6 +397,22 @@ function PodcastPlayer() {
             {isRecorded && (
                 <audio controls src={isRecorded} className="w-full mt-2" />
             )}
+            {aiResponse && (
+                <div className="mt-4">
+                    <h3 className="text-sm font-medium text-gray-700 mb-2">AI Response:</h3>
+                    <audio 
+                        controls 
+                        src={aiResponse}
+                        className="w-full"
+                        autoPlay
+                        onError={(e) => {
+                            console.error('Audio player error:', e);
+                            setError('Failed to load audio response');
+                        }}
+                    />
+                </div>
+            )}
+            
         </div>
 
 

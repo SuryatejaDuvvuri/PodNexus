@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Podnexus.PodnexusBackend.Config.CorsConfig;
 import com.Podnexus.PodnexusBackend.Service.AIService;
 import com.Podnexus.PodnexusBackend.Service.SpeechToText;
+import com.Podnexus.PodnexusBackend.Service.TextToSpeech;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.MediaType;
@@ -32,6 +33,9 @@ public class PodcastController
 
     @Autowired
     private SpeechToText stt;
+
+    @Autowired
+    private TextToSpeech tts;
 
     // private final ChatClient chatClient;
 
@@ -64,9 +68,6 @@ public class PodcastController
             System.out.println("File: " + inFile.getAbsolutePath());
             String script =  stt.convertTranscript(inFile);
 
-
-            System.out.println("Transcript: " + script);
-
             if(script.isEmpty())
             {
                 return ResponseEntity.badRequest().body(Map.of("error", "Audio file is empty or not valid"));
@@ -75,17 +76,16 @@ public class PodcastController
             ? String.format("User question at %s: %s", timestamp, script)
             : script;
             String aiResponse = ai.respondToUser(response);
-
-            // String aiResponse = "";
-
-            // System.out.println("Transcript: " + script);
+         
             System.out.println("AI Response: " + aiResponse);
+
+            String responseFile = tts.convertToSpeech(aiResponse);
 
 
 
             return ResponseEntity.ok(Map.of(
                 "script", script,
-                "response", aiResponse
+                "response", responseFile
             ));
         }
         catch (Exception e)
