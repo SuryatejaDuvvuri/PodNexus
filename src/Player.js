@@ -245,15 +245,13 @@ function PodcastPlayer() {
         <div className="min h-screen mx-auto p-6 bg-gradient-to-br from-emerald-200 to-lime-200 rounded-lg shadow-lg">
             <div className="grid grid-cols-3 gap-8">
                 <div className="col-span-1  bg-white rounded-xl shadow-lg p-6">
-                        <h3 className="text-lg font-semibold mb-4 text-emerald-800">Podcast Transcript</h3>
+                        <h3 className="text-lg font-semibold mb-4 text-emerald-800">AI Response</h3>
                         <div className="bg-gray-100 rounded-lg p-4 h-[600px] overflow-y-auto">
-                        {transcript.length > 0 && transcript.split('\n').map((line, index) => {
-        
-                            
+                        {transcript.length > 0 && transcript.map((item, index) => {
                             return (
                                 <div key={index} className="text-sm font-medium mr-2">
                                     <span className="text-gray-500 text-sm mr-2">{format(index*3)}</span>
-                                    <span className="text-gray-700">{line}</span>
+                                    <span className="text-gray-700">{item.text}</span>
                                 </div>
                             );
                         })}
@@ -362,7 +360,7 @@ function PodcastPlayer() {
                 </div>
 
                 <div className="col-span-1 bg-white rounded-xl shadow-lg p-6">
-                    <h3 className="text-lg font-semibold mb-4 text-emerald-800">AI Response</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-emerald-800">Podcast Transcript</h3>
                     <div className="bg-gray-100 rounded-lg p-4 h-[600px] overflow-y-auto">
                     {podcastTranscript && podcastTranscript.split('\n').map((line, index) => {
        
