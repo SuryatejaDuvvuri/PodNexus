@@ -8,10 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.Podnexus.PodnexusBackend.Model.TranscriptSegment;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SpeechToText 
@@ -57,24 +61,38 @@ public class SpeechToText
         }
     }
 
-    public String processDiarization(File inFile)
+    public List<TranscriptSegment> processDiarization(File inFile)
     {
        try
        {
 
-            ProcessBuilder pb = new ProcessBuilder("python3", "src/main/java/com/Podnexus/PodnexusBackend/Service/diarize.py", "/Users/SuryatejaD/Developer/Projects/Spring/podnexus/PodnexusBackend/audio-files/One.mp3");
+            ProcessBuilder pb = new ProcessBuilder("python3", "src/main/java/com/Podnexus/PodnexusBackend/Service/diarize.py", inFile.getAbsolutePath());
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
             try(BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream())))
             {
-                return br.lines().collect(Collectors.joining("\n"));
+                // return br.lines().collect(Collectors.joining("\n"));
+                String line = br.lines()
+                .filter(l -> l.trim().startsWith("["))
+                .findFirst()
+                .orElse("");
+
+                if (line.isEmpty()) {
+                    System.err.println("No valid JSON output from diarization script.");
+                    return List.of();
+                }
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<TranscriptSegment> segments = objectMapper.readValue(line, new TypeReference<List<TranscriptSegment>>() {});
+                return segments;
             }
        }
        catch(IOException e)
        {
             e.printStackTrace();
-            return "Error identifying speakers. " + e;
+            // return "Error identifying speakers. " + e;
+            return List.of();
        }
     }
 }

@@ -1,6 +1,7 @@
 package com.Podnexus.PodnexusBackend.Controller;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
 
-
+import com.Podnexus.PodnexusBackend.Model.TranscriptSegment;
 import com.Podnexus.PodnexusBackend.Service.AIService;
 import com.Podnexus.PodnexusBackend.Service.SpeechToText;
 import com.Podnexus.PodnexusBackend.Service.YoutubeService;
@@ -41,12 +42,13 @@ public class YoutubeController
     
 
     @PostMapping("/processAudio")
-    public ResponseEntity<String> processLink(@RequestBody Map<String, String> request)
+    public ResponseEntity<Map <String,String>> processLink(@RequestBody Map<String, String> request)
     {
         String link = request.get("youtubeUrl");
         if(link == null || link.isEmpty())
         {
-            return ResponseEntity.badRequest().body("Link is not valid");
+            return ResponseEntity.badRequest()
+            .body(Map.of("error", "Link is not valid"));
         }
         else
         {
@@ -58,16 +60,23 @@ public class YoutubeController
                 File inFile = audioPath.toFile();
                 System.out.println(inFile.getAbsolutePath());
                 String transcript = stt.convertTranscript(inFile);
-                // String transcript = stt.processDiarization(inFile);
-                System.out.println("AI Response: " + aiService.processTranscript(transcript));
-                System.out.println(transcript);
+                // List<TranscriptSegment> transcript = stt.processDiarization(inFile);
+                // System.out.println("AI Response: " + aiService.processTranscript(transcript));
+                String aiResponse = aiService.processTranscript(transcript);
+                // System.out.println(transcript);
                
-                return ResponseEntity.ok().body(output);
+                return ResponseEntity.ok().body(
+                    Map.of(
+                        "audioPath", output,
+                        "transcript", transcript,
+                        "aiResponse", aiResponse
+                    ));
             }
             catch(Exception e)
             {
                 // System.out.println(e.getMessage());
-                return ResponseEntity.badRequest().body(e.getMessage());
+                return ResponseEntity.badRequest()
+                .body(Map.of("error", e.getMessage()));
             }
         }
     }

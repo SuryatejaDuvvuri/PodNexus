@@ -84,7 +84,7 @@ public class PodcastController
 
 
             return ResponseEntity.ok(Map.of(
-                "script", script,
+                "script", aiResponse,
                 "response", responseFile
             ));
         }
