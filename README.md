@@ -1,70 +1,77 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Podnexus - An Interactive Podcast Application
+ 
+ > Author: [Suryateja Duvvuri](https://github.com/SuryatejaDuvvuri)
 
-## Available Scripts
 
-In the project directory, you can run:
+#### Motivation
+>Listening to a podcast is like listening to a 90 min lecture where the content is only delivered by the host or the professor themselves. This is one way of delivering content but it does not always engage the audience to interact with the content especially in a podcast where audience cannot directly interact with the host. With the power of AI, we can make the podcast interactive which improves audience engagement with the content by asking questions and providing feedback in which the AI can give responses in real time. This application also allows the user to explore a topic in context as much as they want just like in any conversational interaction. 
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### General Description:
+> The application offers a simple, intuitive user interface that prompts the user to insert the YouTube podcast link. The backend processes the link and converts it to an audio file that the user can play. Meanwhile, it uses speech to text transcription as well as Ollama to customize the AI to our needs by giving the content of the podcast as if they were the host. Once the audio player shows up, the user can ask questions by clicking the "Start Recording" button. Once they're done asking their question, it will be prompted to the AI where the AI will produce a response and be delivered through text to speech using ElevenLabs API.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Demo
+[![Watch the video](https://www.youtube.com/watch?v=AecZcCicCwM)
 
-### `npm test`
+#### Languages/Tools/Technologies used:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Frontend: React.js, Tailwind CSS, Radix UI(for customized components)
+Backend: Spring Boot, Spring MVC, Spring Web, Spring AI(Ollama LLM), Local Whisper.cpp(For Speech to Text), ElevenLabs API(For text to speech)
+API: Youtube Data API(For extracting audio from a link), REST API for communicating between frontend and backend
 
-### `npm run build`
+ 
+#### The features in this project would be:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Youtube Podcast Integration
+> Users can give a Youtube Link which is then converted into an audio file locally.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Real-time AI-Interaction
+> Users can get AI-generated responses based on the context of the podcast
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Speech to Text and Text to Speech
+> Speech to Text converts user's voice or podcast's audio to text using Whisper
+> Text To Speech converts AI's textual response into voice using ElevenLabs
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+ ## Screenshots
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+> <img width="1500" alt="image" src="https://github.com/user-attachments/assets/a08a0d59-968a-4213-b36a-4718ace73760" />
+<img width="1493" alt="image" src="https://github.com/user-attachments/assets/c359ee7b-dfe8-47a0-8473-eb89934ef375" />
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## **Installation and Usage**
 
-### Code Splitting
+### **Prerequisites**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Before you can start running this project, make sure you have the following tools installed:
 
-### Analyzing the Bundle Size
+- **Java 11 or higher** (for backend)
+- **Node.js** (for frontend development)
+- **Docker** (optional for deploying backend)
+- **Python** (for diarization and speech-to-text)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### **1. Clone the Repository**
 
-### Making a Progressive Web App
+First, clone the project repository to your local machine:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+[git clone https://github.com/yourusername/podnexus.git](https://github.com/SuryatejaDuvvuri/PodNexus.git)
 
-### Advanced Configuration
+```
+### **2. Backend Setup (Spring Boot)
+1. Run the following in separate terminal.
+2. cd PodnexusBackend
+3. Do ```mvn clean install``` and ```mvn spring-boot::run```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### **3. Frontend Setup
+```cd podnexus```
+```npm install```
+```npm run start```
+### **4. Ollama Setup
+1. Refer to Ollama Documentation on how to install Ollama and run Llama 3.2: https://github.com/ollama/ollama
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
