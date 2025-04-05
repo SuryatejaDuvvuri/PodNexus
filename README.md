@@ -38,8 +38,7 @@ API: Youtube Data API(For extracting audio from a link), REST API for communicat
 
 
  ## Screenshots
-
-> <img width="1500" alt="image" src="https://github.com/user-attachments/assets/a08a0d59-968a-4213-b36a-4718ace73760" />
+<img width="1500" alt="image" src="https://github.com/user-attachments/assets/a08a0d59-968a-4213-b36a-4718ace73760" />
 <img width="1493" alt="image" src="https://github.com/user-attachments/assets/c359ee7b-dfe8-47a0-8473-eb89934ef375" />
 
 
