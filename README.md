@@ -62,16 +62,16 @@ First, clone the project repository to your local machine:
 [git clone https://github.com/yourusername/podnexus.git](https://github.com/SuryatejaDuvvuri/PodNexus.git)
 
 ```
-### **2. Backend Setup (Spring Boot)
+### 2. Backend Setup (Spring Boot)
 1. Run the following in separate terminal.
 2. cd PodnexusBackend
 3. Do ```mvn clean install``` and ```mvn spring-boot::run```
 
-### **3. Frontend Setup
+### 3. Frontend Setup
 ```cd podnexus```
 ```npm install```
 ```npm run start```
-### **4. Ollama Setup
+### 4. Ollama Setup
 1. Refer to Ollama Documentation on how to install Ollama and run Llama 3.2: https://github.com/ollama/ollama
 
 
