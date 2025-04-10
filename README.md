@@ -12,7 +12,8 @@
 > The application offers a simple, intuitive user interface that prompts the user to insert the YouTube podcast link. The backend processes the link and converts it to an audio file that the user can play. Meanwhile, it uses speech to text transcription as well as Ollama to customize the AI to our needs by giving the content of the podcast as if they were the host. Once the audio player shows up, the user can ask questions by clicking the "Start Recording" button. Once they're done asking their question, it will be prompted to the AI where the AI will produce a response and be delivered through text to speech using ElevenLabs API.
 
 ### Demo
-[![Watch the video](https://github.com/user-attachments/assets/a08a0d59-968a-4213-b36a-4718ace7376)](https://www.youtube.com/watch?v=AecZcCicCwM)
+[![Watch the video](<img width="998" alt="image" src="https://github.com/user-attachments/assets/d5165bbd-3f5f-43b0-99e1-94738603af60" />
+)](https://www.youtube.com/watch?v=AecZcCicCwM)
 
 
 #### Languages/Tools/Technologies used:
@@ -50,8 +51,7 @@ API: Youtube Data API(For extracting audio from a link), REST API for communicat
 Before you can start running this project, make sure you have the following tools installed:
 
 - **Java 11 or higher** (for backend)
-- **Node.js** (for frontend development)
-- **Docker** (optional for deploying backend)
+- **React.js** (for frontend development)
 - **Python** (for diarization and speech-to-text)
 
 ### **1. Clone the Repository**
