@@ -59,7 +59,7 @@ Before you can start running this project, make sure you have the following tool
 First, clone the project repository to your local machine:
 
 ```bash
-[git clone https://github.com/yourusername/podnexus.git](https://github.com/SuryatejaDuvvuri/PodNexus.git)
+[git clone https://github.com/SuryatejaDuvvuri/podnexus.git]
 
 ```
 ### 2. Backend Setup (Spring Boot)
